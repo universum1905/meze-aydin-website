@@ -10,120 +10,107 @@
 <meta name="theme-color" content="#4CAF50">
   
   <style>
-  
-.sepet-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 6px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-  flex-wrap: wrap;
-}
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fdfcf9;
+    color: #222;
+    padding: 20px;
+    font-size: 17px;
+  }
 
-.sepet-urun-adi {
-  font-weight: bold;
-  font-size: 14px;
-  flex: 2;
-  min-width: 100px;
-}
+  h1 {
+    color: white;
+    background-color: #5a3e85;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
 
-.sepet-item select {
-  width: 70px;
-  font-size: 14px;
-}
-
-.fiyat-goster {
-  font-weight: bold;
-  min-width: 60px;
-  font-size: 14px;
-}
-
-.sil-btn {
-  color: red;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-body {
-    font-family: Arial;
-    padding: 10px;
+  h1 img {
+    height: 44px;
   }
 
   label, select, button {
+    font-size: 17px;
+    margin-top: 12px;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     display: block;
-    margin: 10px 0;
     box-sizing: border-box;
   }
 
-  .sil-btn {
-    color: red;
-    margin-left: 10px;
-    cursor: pointer;
+  select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
   }
 
-ul#sepet {
-  overflow-x: auto;
-}
+  button {
+    background-color: #8c63f6;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
+  button:hover {
+    background-color: #734bd8;
+  }
 
-body {
-  background-color: #f0f8ff;
-  color: #333;
-}
+  .sepet-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
 
-h1 {
-  color: #2e8b57;
-}
+  .sepet-urun-adi {
+    font-weight: bold;
+    font-size: 16px;
+    flex: 2;
+    min-width: 100px;
+  }
 
-button {
-  background-color: #4CAF50;
-  color: white;
-  font-weight: bold;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  .sepet-item select {
+  width: 83px;
   font-size: 16px;
 }
 
-button:hover {
-  background-color: #45a049;
-}
 
-label, select, button, .sepet-item, .fiyat-goster, .sil-btn {
-  font-size: 16px;
-}
 
-body {
-  background-color: #f5f7f2;
-  color: #222;
-}
+  .fiyat-goster {
+    font-weight: bold;
+    min-width: 60px;
+    font-size: 16px;
+  }
 
-h1 {
-  color: #6a7c00;
-}
+  .sil-btn {
+    color: crimson;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    white-space: nowrap;
+    margin-left: 10px;
+  }
 
-button {
-  background-color: #c3b400;
-  color: white;
-}
-
-button:hover {
-  background-color: #b0a000;
-}
-
-.sepet-item {
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-}
+  ul#sepet {
+    list-style-type: none;
+    padding: 0;
+  }
 </style>
 
 </head>
