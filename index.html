@@ -1,1 +1,1015 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- BUNU EKLE -->
+  <title>Meze Sipariş Formu</title>
+  <style>
+  
+.sepet-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 6px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+
+.sepet-urun-adi {
+  font-weight: bold;
+  font-size: 14px;
+  flex: 2;
+  min-width: 100px;
+}
+
+.sepet-item select {
+  width: 70px;
+  font-size: 14px;
+}
+
+.fiyat-goster {
+  font-weight: bold;
+  min-width: 60px;
+  font-size: 14px;
+}
+
+.sil-btn {
+  color: red;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+body {
+    font-family: Arial;
+    padding: 10px;
+  }
+
+  label, select, button {
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    margin: 10px 0;
+    box-sizing: border-box;
+  }
+
+  .sil-btn {
+    color: red;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+ul#sepet {
+  overflow-x: auto;
+}
+
+</style>
+
+</head>
+<body>
+  <h1>Sipariş Formu</h1>
+
+  <label>Kategori:</label>
+  <select id="kategori" onchange="kategoriDegisti()">
+  <option value="">--Kategori Seç--</option>
+  <option value="meze">Meze</option>
+  <option value="icecek">İçecek</option>
+  <option value="diger">Diğer Lezzet</option>
+  <option value="tatli">Tatlı</option>
+</select>
+
+  <label>Meze:</label>
+  <select id="urun" onchange="urunDegisti()"></select>
+
+  <label>Gramaj:</label>
+  <select id="gramaj"></select>
+
+  <label>Adet:</label>
+  <select id="adet">
+    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+    <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+    <option value="10">10</option>
+  </select>
+
+  <button onclick="ekleUrun()">Ekle</button>
+
+  <h3>Sepetiniz:</h3>
+  <ul id="sepet"></ul>
+
+  <h3>Toplam: <span id="toplam">0</span> TL</h3>
+
+  <script>
+let sepetData = [];
+
+    const urunler = {
+      meze: {
+
+"Acılı Ezme": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+
+"Alman Salatası": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+        
+"Amerikan Salatası": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Aşa Salatası": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Aşk Acısı": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+        ],
+
+"Atom": [
+          { miktar: "100 gr", fiyat: 55 },
+          { miktar: "200 gr", fiyat: 110 },
+{ miktar: "300 gr", fiyat: 165 },
+{ miktar: "400 gr", fiyat: 220 },
+{ miktar: "500 gr", fiyat: 260 },
+{ miktar: "600 gr", fiyat: 312 },
+{ miktar: "700 gr", fiyat: 364 },
+{ miktar: "800 gr", fiyat: 416 },
+{ miktar: "900 gr", fiyat: 468 },
+{ miktar: "1000 gr", fiyat: 500 }
+        ],
+
+"Atomix": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Baby Enginar Salatası": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Barbunya Pilaki": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Bozcaada": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Cacık ": [
+          { miktar: "100 gr", fiyat: 60 },
+          { miktar: "200 gr", fiyat: 120 },
+{ miktar: "300 gr", fiyat: 180 },
+{ miktar: "400 gr", fiyat: 240 },
+{ miktar: "500 gr", fiyat: 285 },
+{ miktar: "600 gr", fiyat: 342 },
+{ miktar: "700 gr", fiyat: 399 },
+{ miktar: "800 gr", fiyat: 456 },
+{ miktar: "900 gr", fiyat: 513 },
+{ miktar: "1000 gr", fiyat: 550 }
+        ],
+
+"Cevriye": [
+          { miktar: "100 gr", fiyat: 75 },
+          { miktar: "200 gr", fiyat: 150 },
+{ miktar: "300 gr", fiyat: 225 },
+{ miktar: "400 gr", fiyat: 300 },
+{ miktar: "500 gr", fiyat: 360 },
+{ miktar: "600 gr", fiyat: 432 },
+{ miktar: "700 gr", fiyat: 504 },
+{ miktar: "800 gr", fiyat: 576 },
+{ miktar: "900 gr", fiyat: 648 },
+{ miktar: "1000 gr", fiyat: 700 }
+],
+
+
+"Çingene Salatası": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Cümbüş": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Deniz Börülcesi": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Ekşili Mantar": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Fava": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Gelin Turşusu": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Girit Kabak": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Gömme": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Havuç Tarator": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Haydari": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Hawaii": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Humus": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"İzmir bombası": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Karabuğday (Greçka) Salatası": [
+          { miktar: "100 gr", fiyat: 80 },
+          { miktar: "200 gr", fiyat: 160 },
+{ miktar: "300 gr", fiyat: 240 },
+{ miktar: "400 gr", fiyat: 320 },
+{ miktar: "500 gr", fiyat: 385 },
+{ miktar: "600 gr", fiyat: 462 },
+{ miktar: "700 gr", fiyat: 539 },
+{ miktar: "800 gr", fiyat: 616 },
+{ miktar: "900 gr", fiyat: 693 },
+{ miktar: "1000 gr", fiyat: 750 }
+        ],
+
+"Karışık Kızartma": [
+          { miktar: "100 gr", fiyat: 80 },
+          { miktar: "200 gr", fiyat: 160 },
+{ miktar: "300 gr", fiyat: 240 },
+{ miktar: "400 gr", fiyat: 320 },
+{ miktar: "500 gr", fiyat: 385 },
+{ miktar: "600 gr", fiyat: 462 },
+{ miktar: "700 gr", fiyat: 539 },
+{ miktar: "800 gr", fiyat: 616 },
+{ miktar: "900 gr", fiyat: 693 },
+{ miktar: "1000 gr", fiyat: 750 }
+        ],
+
+"Kaya Koruğu": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Kısır": [
+          { miktar: "100 gr", fiyat: 55 },
+          { miktar: "200 gr", fiyat: 110 },
+{ miktar: "300 gr", fiyat: 165 },
+{ miktar: "400 gr", fiyat: 220 },
+{ miktar: "500 gr", fiyat: 260 },
+{ miktar: "600 gr", fiyat: 312 },
+{ miktar: "700 gr", fiyat: 364 },
+{ miktar: "800 gr", fiyat: 416 },
+{ miktar: "900 gr", fiyat: 468 },
+{ miktar: "1000 gr", fiyat: 500 }
+        ],
+
+"Köpoğlu": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Köz Patlıicanlı Atom": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Közlenmiş Patlıcan Salatası": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Kuru Börülce Salatası": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Manca": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Mantar Rüyası": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Maş Salatası": [
+          { miktar: "100 gr", fiyat: 75 },
+          { miktar: "200 gr", fiyat: 150 },
+{ miktar: "300 gr", fiyat: 225 },
+{ miktar: "400 gr", fiyat: 300 },
+{ miktar: "500 gr", fiyat: 360 },
+{ miktar: "600 gr", fiyat: 432 },
+{ miktar: "700 gr", fiyat: 504 },
+{ miktar: "800 gr", fiyat: 576 },
+{ miktar: "900 gr", fiyat: 648 },
+{ miktar: "1000 gr", fiyat: 700 }
+],
+
+"Nuraniye": [
+          { miktar: "100 gr", fiyat: 75 },
+          { miktar: "200 gr", fiyat: 150 },
+{ miktar: "300 gr", fiyat: 225 },
+{ miktar: "400 gr", fiyat: 300 },
+{ miktar: "500 gr", fiyat: 360 },
+{ miktar: "600 gr", fiyat: 432 },
+{ miktar: "700 gr", fiyat: 504 },
+{ miktar: "800 gr", fiyat: 576 },
+{ miktar: "900 gr", fiyat: 648 },
+{ miktar: "1000 gr", fiyat: 700 }
+],
+
+"Pancar Turşusu": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Pancarlı Kısır": [
+          { miktar: "100 gr", fiyat: 55 },
+          { miktar: "200 gr", fiyat: 110 },
+{ miktar: "300 gr", fiyat: 165 },
+{ miktar: "400 gr", fiyat: 220 },
+{ miktar: "500 gr", fiyat: 260 },
+{ miktar: "600 gr", fiyat: 312 },
+{ miktar: "700 gr", fiyat: 364 },
+{ miktar: "800 gr", fiyat: 416 },
+{ miktar: "900 gr", fiyat: 468 },
+{ miktar: "1000 gr", fiyat: 500 }
+        ],
+
+"Pembe Sultan": [
+          { miktar: "100 gr", fiyat: 60 },
+          { miktar: "200 gr", fiyat: 120 },
+{ miktar: "300 gr", fiyat: 180 },
+{ miktar: "400 gr", fiyat: 240 },
+{ miktar: "500 gr", fiyat: 285 },
+{ miktar: "600 gr", fiyat: 342 },
+{ miktar: "700 gr", fiyat: 399 },
+{ miktar: "800 gr", fiyat: 456 },
+{ miktar: "900 gr", fiyat: 513 },
+{ miktar: "1000 gr", fiyat: 550 }
+        ],
+
+"Piyaz": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Rus Salatası": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Şakşuka": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Yoğurt": [
+          { miktar: "100 gr", fiyat: 60 },
+          { miktar: "200 gr", fiyat: 120 },
+{ miktar: "300 gr", fiyat: 180 },
+{ miktar: "400 gr", fiyat: 240 },
+{ miktar: "500 gr", fiyat: 285 },
+{ miktar: "600 gr", fiyat: 342 },
+{ miktar: "700 gr", fiyat: 399 },
+{ miktar: "800 gr", fiyat: 456 },
+{ miktar: "900 gr", fiyat: 513 },
+{ miktar: "1000 gr", fiyat: 550 }
+        ],
+
+"Yoğurtlu Cevizli Kereviz": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Yoğurtlu Közlenmiş Biber": [
+          { miktar: "100 gr", fiyat: 60 },
+          { miktar: "200 gr", fiyat: 120 },
+{ miktar: "300 gr", fiyat: 180 },
+{ miktar: "400 gr", fiyat: 240 },
+{ miktar: "500 gr", fiyat: 285 },
+{ miktar: "600 gr", fiyat: 342 },
+{ miktar: "700 gr", fiyat: 399 },
+{ miktar: "800 gr", fiyat: 456 },
+{ miktar: "900 gr", fiyat: 513 },
+{ miktar: "1000 gr", fiyat: 550 }
+        ],
+
+"Yoğurtlu Mantar": [
+          { miktar: "100 gr", fiyat: 70 },
+          { miktar: "200 gr", fiyat: 140 },
+{ miktar: "300 gr", fiyat: 210 },
+{ miktar: "400 gr", fiyat: 280 },
+{ miktar: "500 gr", fiyat: 335 },
+{ miktar: "600 gr", fiyat: 402 },
+{ miktar: "700 gr", fiyat: 469 },
+{ miktar: "800 gr", fiyat: 536 },
+{ miktar: "900 gr", fiyat: 603 },
+{ miktar: "1000 gr", fiyat: 650 }
+],
+
+"Yoğurtlu Semizotu": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Zeytin Salatası": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+"Zeytinyağlı Enginar": [
+          { miktar: "100 gr", fiyat: 65 },
+          { miktar: "200 gr", fiyat: 130 },
+{ miktar: "300 gr", fiyat: 195 },
+{ miktar: "400 gr", fiyat: 260 },
+{ miktar: "500 gr", fiyat: 310 },
+{ miktar: "600 gr", fiyat: 372 },
+{ miktar: "700 gr", fiyat: 434 },
+{ miktar: "800 gr", fiyat: 496 },
+{ miktar: "900 gr", fiyat: 558 },
+{ miktar: "1000 gr", fiyat: 600 }
+        ],
+
+
+ },
+  icecek: {
+    "Ayran": [
+      { miktar: "175 ml", fiyat: 50 }
+    ],
+
+"Buzküpü": [
+      { miktar: "24 Adet", fiyat: 45 }
+    ],
+
+"Cola": [
+      { miktar: "200 ml", fiyat: 55 },
+{ miktar: "1 Litre", fiyat: 70 }
+    ],
+
+"Lipton": [
+      { miktar: "330 ml", fiyat: 50 }
+    ],
+
+"Pepsi": [
+      { miktar: "330 ml", fiyat: 50 },
+{ miktar: "1 Litre", fiyat: 80 }
+    ],
+
+"Şalgam": [
+      { miktar: "330 ml", fiyat: 30 },
+      { miktar: "1 Litre", fiyat: 50 }
+    ],
+
+"Soda": [
+      { miktar: "200 ml", fiyat: 35 }
+    ],
+
+"Sprite": [
+      { miktar: "250 ml", fiyat: 40 }
+    ],
+
+    "Su": [
+      { miktar: "500 ml", fiyat: 20 },
+    { miktar: "1,5 Litre", fiyat: 40 }
+],
+
+"Turşu suyu": [
+      { miktar: "1 Litre", fiyat: 50 }
+    ]
+  },
+
+
+diger: {
+  "Bazlama": [
+    { miktar: "Adet", fiyat: 30 }
+  ],
+
+"Çiğ köfte": [
+    { miktar: "200 gr", fiyat: 120 },
+{ miktar: "500 gr", fiyat: 210 },
+{ miktar: "1 KG", fiyat: 400 }
+  ],
+
+"Çıtır Atom Biberi (Acı)": [
+    { miktar: "küçük", fiyat: 100 },
+{ miktar: "büyük", fiyat: 200 }
+  ],
+
+"Çıtır Biber": [
+    { miktar: "Adet", fiyat: 20 },
+{ miktar: "6 Adet", fiyat: 120 }
+  ],
+
+"İçli köfte": [
+    { miktar: "Adet", fiyat: 60 }
+  ],
+
+"Kırmızı Lahana turşusu": [
+    { miktar: "220 gr", fiyat: 100 }
+  ],
+
+"Kuru domates": [
+    { miktar: "Adet", fiyat: 100 }
+  ],
+
+"Mercimek köfte": [
+    { miktar: "250 gr", fiyat: 120 }
+  ],
+
+"Mücver": [
+    { miktar: "Adet", fiyat: 25 }
+  ],
+
+"Sarma": [
+    { miktar: "200 gr", fiyat: 180 },
+{ miktar: "500 gr", fiyat: 330 },
+{ miktar: "1 KG", fiyat: 600 }
+  ],
+
+"Sigara Böreği": [
+    { miktar: "Adet", fiyat: 25 }
+  ],
+
+"Zeytin": [
+    { miktar: "100 gr", fiyat: 100 }
+  ]
+
+},
+tatli: {
+  "Kabak Tatlısı": [
+    { miktar: "200 gr", fiyat: 120 }
+  ],
+
+"Ayva Tatlısı": [
+    { miktar: "200 gr", fiyat: 120 }
+  ]
+}
+};
+
+    let toplam = 0;
+
+    function kategoriDegisti() {
+      const kategori = document.getElementById("kategori").value;
+      const urunSelect = document.getElementById("urun");
+      let kategoriEtiketi = {
+  meze: "Meze Seç",
+  icecek: "İçecek Seç",
+  diger: "Lezzet Seç",
+  tatli: "Tatlı Seç"
+};
+
+urunSelect.innerHTML = `<option value=''>--${kategoriEtiketi[kategori] || "Ürün Seç"}--</option>`;
+
+
+      if (urunler[kategori]) {
+        Object.keys(urunler[kategori]).forEach(urun => {
+          const opt = document.createElement("option");
+          opt.value = urun;
+          opt.textContent = urun;
+          urunSelect.appendChild(opt);
+        });
+      }
+
+      document.getElementById("gramaj").innerHTML = "";
+    }
+
+    function urunDegisti() {
+      const kategori = document.getElementById("kategori").value;
+      const urun = document.getElementById("urun").value;
+      const gramajSelect = document.getElementById("gramaj");
+      gramajSelect.innerHTML = "";
+
+      if (urunler[kategori] && urunler[kategori][urun]) {
+        urunler[kategori][urun].forEach((g, i) => {
+          const opt = document.createElement("option");
+          opt.value = i;
+          opt.textContent = `${g.miktar} - ${g.fiyat} TL`;
+          gramajSelect.appendChild(opt);
+        });
+      }
+    }
+
+   
+
+function ekleUrun() {
+  const kategori = document.getElementById('kategori').value;
+  const urun = document.getElementById('urun').value;
+  const gramajIndex = document.getElementById('gramaj').value;
+  const adet = parseInt(document.getElementById('adet').value);
+
+  // Ürünü sepete ekle
+  sepetData.push({
+    kategori,
+    urun,
+    gramaj: parseInt(gramajIndex),
+    adet
+  });
+
+  guncelleSepet(); // sepetteki listeyi güncelle
+}
+
+// BU KISIM ARTIK DIŞARIDA!
+function guncelleSepet() {
+  const sepet = document.getElementById('sepet');
+  sepet.innerHTML = '';
+  toplam = 0;
+
+  sepetData.forEach((urunBilgi, index) => {
+    const secilen = urunler[urunBilgi.kategori][urunBilgi.urun][urunBilgi.gramaj];
+    const fiyat = secilen.fiyat * urunBilgi.adet;
+
+    const li = document.createElement('li');
+    li.className = 'sepet-item';
+
+    const urunAd = document.createElement('span');
+    urunAd.className = 'sepet-urun-adi';
+    urunAd.textContent = urunBilgi.urun;
+
+    const gramajSelect = document.createElement('select');
+    urunler[urunBilgi.kategori][urunBilgi.urun].forEach((g, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${g.miktar}`;
+      if (i === urunBilgi.gramaj) opt.selected = true;
+      gramajSelect.appendChild(opt);
+    });
+
+    const adetSelect = document.createElement('select');
+    for (let i = 1; i <= 10; i++) {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = i;
+      if (i === urunBilgi.adet) opt.selected = true;
+      adetSelect.appendChild(opt);
+    }
+
+    gramajSelect.onchange = adetSelect.onchange = () => {
+      sepetData[index].gramaj = parseInt(gramajSelect.value);
+      sepetData[index].adet = parseInt(adetSelect.value);
+      guncelleSepet();
+    };
+
+    const fiyatSpan = document.createElement('span');
+    fiyatSpan.className = "fiyat-goster";
+    fiyatSpan.textContent = `= ${fiyat} TL`;
+
+    const silBtn = document.createElement('span');
+    silBtn.className = "sil-btn";
+    silBtn.textContent = "Sil";
+    silBtn.onclick = () => silUrun(index);
+
+    li.appendChild(urunAd);
+    li.appendChild(gramajSelect);
+    li.appendChild(adetSelect);
+    li.appendChild(fiyatSpan);
+    li.appendChild(silBtn);
+
+    sepet.appendChild(li);
+    toplam += fiyat;
+  });
+
+  document.getElementById('toplam').textContent = toplam;
+}
+
+function silUrun(index) {
+  sepetData.splice(index, 1); // Diziden ürünü sil
+  guncelleSepet(); // Sepeti güncelle
+}
+
+  </script>
+</body>
+</html>
