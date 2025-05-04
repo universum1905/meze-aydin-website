@@ -73,11 +73,65 @@ ul#sepet {
   overflow-x: auto;
 }
 
+
+body {
+  background-color: #f0f8ff;
+  color: #333;
+}
+
+h1 {
+  color: #2e8b57;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+label, select, button, .sepet-item, .fiyat-goster, .sil-btn {
+  font-size: 16px;
+}
+
+body {
+  background-color: #f5f7f2;
+  color: #222;
+}
+
+h1 {
+  color: #6a7c00;
+}
+
+button {
+  background-color: #c3b400;
+  color: white;
+}
+
+button:hover {
+  background-color: #b0a000;
+}
+
+.sepet-item {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+}
 </style>
 
 </head>
 <body>
-  <h1>Sipariş Formu</h1>
+  <h1 style="display: flex; align-items: center; gap: 10px;">
+  <img src="logo.png" alt="Logo" style="height: 40px;">
+  Sipariş Formu
+</h1>
 
   <label>Kategori:</label>
   <select id="kategori" onchange="kategoriDegisti()">
@@ -984,7 +1038,8 @@ function ekleUrun() {
     adet
   });
 
-  guncelleSepet(); // sepetteki listeyi güncelle
+  guncelleSepet();
+  document.getElementById('adet').value = "1";
 }
 
 // BU KISIM ARTIK DIŞARIDA!
