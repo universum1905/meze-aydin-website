@@ -113,6 +113,27 @@
     list-style-type: none;
     padding: 0;
   }
+
+button[type="reset"] {
+  background-color: #ccc;
+  color: #000;
+}
+
+#resetButton {
+    background-color: #6bc1ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#resetButton:hover {
+    background-color: #ff4b4b;
+}
+
 </style>
 
 </head>
@@ -146,6 +167,7 @@
   </select>
 
   <button onclick="ekleUrun()">Ekle</button>
+<button id="resetButton" type="button" onclick="formuSifirla()">Sıfırla</button>
 
   <h3>Sepetiniz:</h3>
   <ul id="sepet"></ul>
@@ -969,6 +991,15 @@ tatli: {
 };
 
     let toplam = 0;
+
+function formuSifirla() {
+  document.getElementById("kategori").value = "";
+  document.getElementById("urun").innerHTML = "";
+  document.getElementById("gramaj").innerHTML = "";
+  document.getElementById("adet").value = "1";
+  sepetData = [];
+  guncelleSepet();
+}
 
     function kategoriDegisti() {
       const kategori = document.getElementById("kategori").value;
